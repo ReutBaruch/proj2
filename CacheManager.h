@@ -1,12 +1,10 @@
 #ifndef PROJ2_CACHEMANAGER_H
 #define PROJ2_CACHEMANAGER_H
 
-#include "Problem.h"
-#include "Solution.h"
 #include <map>
 
 using namespace std;
-
+template <class Problem, class Solution>
 class CacheManager {
     map <Problem, Solution> problemsAndSolutions;
 

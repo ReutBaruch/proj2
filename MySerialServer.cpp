@@ -13,58 +13,45 @@
 #include <pthread.h>
 #include <time.h>
 
-#define WAIT_FOR_CLIENT 60;
+#define WAIT_FOR_CLIENT 600;
 
 struct socketArgs {
-    template <class InputStream, class OutputStream>
+//    template <class InputStream, class OutputStream>
     int newsockfd;
     int clilen;
     int sockfd;
     struct sockaddr_in cli_addr;
-    ClientHandler<InputStream, OutputStream>* clientHandler;
+    ClientHandler* clientHandler;
 };
-
 
 void* runClient(void* args){
     timeval timeout;
     timeout.tv_sec = WAIT_FOR_CLIENT;
     timeout.tv_usec = 0;
 
-    struct socketArges* arg = (struct socketArgs *) args;
-    char buffer[256];
-    int n;
+    struct socketArgs* param = (struct socketArgs*) args;
 
     while(true) {
         //setting timeout - if over don't wait for client anymore
-        if (select(0, NULL, NULL, NULL, &timeout) > 0) {
+      //  if (select(0, NULL, NULL, NULL, &timeout) > 0) {
             /* Accept actual connection from the client */
-            arg->newsockfd = accept(arg->sockfd, (struct sockaddr *) &(arg->cli_addr), (socklen_t *) &(arg->clilen));
-            if (arg->newsockfd < 0) {
+            param->newsockfd = accept(param->sockfd, (struct sockaddr *) &(param->cli_addr),
+                    (socklen_t*) &(param->clilen));
+            if (param->newsockfd < 0) {
                 perror("ERROR on accept");
                 exit(1);
             }
-
-            /* If connection is established then start communicating */
-            while (true) {
-                bzero(buffer, 1024);
-                n = read(arg->newsockfd, buffer, 1023);
-                if (n < 0) {
-                    perror("ERROR reading from socket");
-                    exit(1);
-                }
-                arg->clientHandler->handleClient(&buffer, &buffer);
-
-                n = write(arg->newsockfd, buffer, sizeof(buffer));
-                if (n < 0) {
-                    perror("ERROR writing to socket");
-                    exit(1);
-                }
-            } // end of while(true)
-        }
+            printf("connected");
+            param->clientHandler->handleClient(param->newsockfd);
+            printf("serverrr\n");
+    /*    } else {
+            printf("timeout");
+            break;
+        }*/
     }
 }
-template <class InputStream, class OutputStream>
-void MySerialServer<InputStream, OutputStream>::open(int port, ClientHandler<InputStream, OutputStream>* client){
+
+void MySerialServer::open(int port, ClientHandler* client){
 
     int sockfd, newsockfd, portno, clilen;
 
@@ -107,13 +94,15 @@ void MySerialServer<InputStream, OutputStream>::open(int port, ClientHandler<Inp
 
     pthread_t pthread;
     pthread_create(&pthread, nullptr, runClient, arg);
+    pthread_join(pthread, NULL);
 
-    close(sockfd);
-    close(newsockfd);
+    this->stop(sockfd);
 };
 
-bool MySerialServer::stop(){
-
+bool MySerialServer::stop(int sockfd){
+    close(sockfd);
+  //  close(newsockfd);
+    return true;
 }
 
 

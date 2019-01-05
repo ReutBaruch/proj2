@@ -4,13 +4,11 @@
 #include "Server.h"
 
 using namespace server_side;
-template <class InputStream, class OutputStream>
-class MySerialServer {
+class MySerialServer: public Server{
 
 public:
-    virtual void open(int port,ClientHandler<InputStream, OutputStream>* clientHandler);
-    virtual bool stop();
-
+    virtual void open(int port,ClientHandler* clientHandler);
+    virtual bool stop(int sockfd);
 };
 
 

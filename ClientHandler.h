@@ -6,12 +6,11 @@
 //#include "InputStream.h"
 //#include "OutputStream.h"
 
-template <class InputStream, class OutputStream>
+//template <class InputStream, class OutputStream>
 class ClientHandler{
 
 public:
-    virtual void handleClient(InputStream inputStream, OutputStream outputStream) = 0;
-
+    virtual void handleClient(int newSockFd) = 0;
 };
 
 #endif //PROJ2_CLIENTHANDLER_H

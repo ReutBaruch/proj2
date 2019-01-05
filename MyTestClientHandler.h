@@ -5,13 +5,14 @@
 #include "Solver.h"
 #include "CacheManager.h"
 
-template <class Problem, class Solution, class InputStream, class OutputStream>
-class MyTestClientHandler : public ClientHandler<InputStream, OutputStream> {
-    CacheManager* cacheManager;
-    Solver<Problem, Solution>* solver;
+template <class Problem, class Solution>
+class MyTestClientHandler : public ClientHandler {
+    CacheManager<string, string>* cacheManager;
+    Solver<string, string>* solver;
 
 public:
-    virtual void handleClient(InputStream inputStream, OutputStream outputStream);
+    MyTestClientHandler(CacheManager<string, string>* cacheManager, Solver<string, string>* solver);
+    virtual void handleClient(int newSockFD);
 
 };
 
