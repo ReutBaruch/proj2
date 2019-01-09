@@ -1,22 +1,23 @@
-#ifndef PROJ2_BFS_H
-#define PROJ2_BFS_H
+#ifndef PROJ2_ASTAR_H
+#define PROJ2_ASTAR_H
 
 #include "Searcher.h"
 #include <unordered_set>
 #include <list>
 #include <string.h>
 
-using namespace std;
-
 template <class Solution, class T>
-class BFS: public Searcher<Solution, T> {
+class Astar: public Searcher<Solution, T> {
     int nodesEvaluated;
 
 public:
-    BFS(){
+    Astar() {
         this->nodesEvaluated = 0;
     }
 
+    int getNumberOfNodesEvaluated(){
+        return this->nodesEvaluated;
+    }
 
     string backTrace(State<T>* goal, Searchable<T>* toSearch) {
         State<T> *start = toSearch->getInitialState();
@@ -57,20 +58,31 @@ public:
 
     string search(Searchable<T>* toSearch){
         list<State<T>*> open;
-        unordered_set<State<T>*> openHash;
-        unordered_set<State<T>*> close;
+        map<State<T>*, int> openHash;
+        //unordered_set<State<T>*> openHash;
+        map<State<T>*, int> closeHash;
+        //unordered_set<State<T>*> closeHash;
+        list<State<T>*> close;
         list<State<T>*> backTraceList;
         State<T>* goal = toSearch->getGoalState();
+        int index = 0;
+
+        string name = goal->getState();
+        char* divide = const_cast<char *>(name.c_str());
+        int goalI = stoi(strtok(divide, ","));
+        int goalJ = stoi(strtok(NULL, ","));
 
         open.push_back(toSearch->getInitialState());
-        openHash.insert(toSearch->getInitialState());
+        openHash.insert(pair<State<T>*, int>(toSearch->getInitialState(), index));
 
         while(!open.empty()){
             State<T>* state = open.front();
             open.pop_front();
             openHash.erase(state);
-            close.insert(state);
+            closeHash.insert(pair<State<T>*, int>(state, index));
+            close.push_back(state);
             this->nodesEvaluated++;
+            index++;
 
             if(state->equals(goal)){
                 this->nodesEvaluated++;
@@ -82,24 +94,31 @@ public:
             while (!succerssors.empty()){
                 State<T>* temp = succerssors.front();
                 succerssors.pop_front();
-                if ((!close.count(temp)) && (!openHash.count(temp))){
+
+                string nameTemp = temp->getState();
+                char* divideTemp = const_cast<char *>(nameTemp.c_str());
+                int tempI = stoi(strtok(divideTemp, ","));
+                int tempJ = stoi(strtok(NULL, ","));
+
+                double h = abs(tempI - goalI) + abs(tempJ - goalJ);
+                double g = temp->getCost() + state->getCost();
+                temp->setCost(g + h);
+                if (closeHash.count(temp)){
+                    State<T>* tempForCost = closeHash.find(temp)->first;
+                    if (temp->getCost() >= tempForCost->getCost()){
+                        continue;
+                    }
+                } else if ((openHash.count(temp)) && (temp->getCost() >= openHash.find(temp)->first.getCost())){
+                    continue;
+                } else {
                     open.push_back(temp);
                     temp->setParent(state);
                     openHash.insert(temp);
-                } else if (openHash.count(temp)){
-                    temp->setParent(state);
-                    close.insert(temp);
-                    this->nodesEvaluated++;
-                    openHash.erase(temp);
                 }
             }
         }
     }
 
-    int getNumberOfNodesEvaluated(){
-        return this->nodesEvaluated;
-    }
 };
 
-
-#endif //PROJ2_BFS_H
+#endif //PROJ2_ASTAR_H

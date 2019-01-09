@@ -1,22 +1,22 @@
-#ifndef PROJ2_BFS_H
-#define PROJ2_BFS_H
+#ifndef PROJ2_BESTFS_H
+#define PROJ2_BESTFS_H
 
-#include "Searcher.h"
 #include <unordered_set>
 #include <list>
 #include <string.h>
 
-using namespace std;
-
 template <class Solution, class T>
-class BFS: public Searcher<Solution, T> {
+class BestFS: public Searcher<Solution, T> {
     int nodesEvaluated;
 
 public:
-    BFS(){
+    BestFS(){
         this->nodesEvaluated = 0;
     }
 
+    int getNumberOfNodesEvaluated(){
+        return this->nodesEvaluated;
+    }
 
     string backTrace(State<T>* goal, Searchable<T>* toSearch) {
         State<T> *start = toSearch->getInitialState();
@@ -55,6 +55,28 @@ public:
         return result;
     }
 
+    list<State<T>*> sort(list<State<T>*> open, State<T>* state){
+        list<State<T>*> result;
+        State<T>* stateOpen;
+        while(!open.empty()){
+            stateOpen = open.front();
+            open.pop_front();
+            if (stateOpen->getCost() >= state->getCost()){
+                result.push_back(state);
+                break;
+            } else {
+                result.push_back(stateOpen);
+            }
+        }
+        while(!open.empty()){
+            stateOpen = open.front();
+            open.pop_front();
+            result.push_back(stateOpen);
+        }
+
+        return result;
+    }
+
     string search(Searchable<T>* toSearch){
         list<State<T>*> open;
         unordered_set<State<T>*> openHash;
@@ -86,6 +108,8 @@ public:
                     open.push_back(temp);
                     temp->setParent(state);
                     openHash.insert(temp);
+                    temp->setCost(temp->getCost() + state->getCost());
+                    open = sort(open, temp);
                 } else if (openHash.count(temp)){
                     temp->setParent(state);
                     close.insert(temp);
@@ -96,10 +120,7 @@ public:
         }
     }
 
-    int getNumberOfNodesEvaluated(){
-        return this->nodesEvaluated;
-    }
 };
 
 
-#endif //PROJ2_BFS_H
+#endif //PROJ2_BESTFS_H
