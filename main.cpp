@@ -13,6 +13,7 @@
 #include "BFS.h"
 #include "BestFS.h"
 #include "Astar.h"
+#include "DFS.h"
 
 using namespace server_side;
 //using namespace std;
@@ -27,15 +28,22 @@ int main() {
     Searcher<string, string>* searcher3 = new Astar<string, string>();
     Solver<string, string>* solver3 = new
             MatrixSolver<string, string, string>(searcher3);
+    Searcher<string, string>* searcher4 = new DFS<string, string>();
+    Solver<string, string>* solver4= new
+            MatrixSolver<string, string, string>(searcher4);
     //string result = solver->solve("1,2;4,5;end;0,0;1,1");
 
     string result = solver->solve("9,8,7;6,5,4;3,20,1;end;0,0;2,2");
-    string result2 = solver2->solve("9,8,7;6,5,4;3,20,1;end;0,0;2,2");
+    //string result2 = solver2->solve("9,8,7;6,5,4;3,20,1;end;0,0;2,2");
+    string result2 = solver2->solve("1,2;3,4;5,6;end;0,0;1,1");
     string result3 = solver3->solve("1,2;3,4;end;0,0;1,1");
+    //string result4 = solver4->solve("9,8,7;6,5,4;3,20,1;end;0,0;2,2");
+    string result4 = solver4->solve("1,2;3,4;5,6;end;0,0;1,1");
     //string result2 = solver2->solve("1,2,3;4,5,6;7,8,9;end;0,0;2,2");
     std::cout << "BestFS: " + result << std::endl;
     std::cout << "BFS: " + result2 << std::endl;
-    std::cout << "Astar: " + result3 << std::endl;
+   // std::cout << "Astar: " + result3 << std::endl;
+    std::cout << "DFS: " + result4 << std::endl;
     //ClientHandler* clientHandler = new MyTestClientHandler<string, string>(cacheManager, solver);
    // Server* server = new MySerialServer();
     //server->open(5400, clientHandler);

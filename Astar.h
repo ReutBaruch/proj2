@@ -58,14 +58,11 @@ public:
 
     string search(Searchable<T>* toSearch){
         list<State<T>*> open;
-        map<State<T>*, int> openHash;
-        //unordered_set<State<T>*> openHash;
-        map<State<T>*, int> closeHash;
-        //unordered_set<State<T>*> closeHash;
+        map<State<T>*, double> openHash;
+        map<State<T>*, double> closeHash;
         list<State<T>*> close;
         list<State<T>*> backTraceList;
         State<T>* goal = toSearch->getGoalState();
-        int index = 0;
 
         string name = goal->getState();
         char* divide = const_cast<char *>(name.c_str());
@@ -73,16 +70,16 @@ public:
         int goalJ = stoi(strtok(NULL, ","));
 
         open.push_back(toSearch->getInitialState());
-        openHash.insert(pair<State<T>*, int>(toSearch->getInitialState(), index));
+        openHash.insert(pair<State<T>*, double>(toSearch->getInitialState(), toSearch->getInitialState()->getCost()));
 
         while(!open.empty()){
             State<T>* state = open.front();
             open.pop_front();
+            double stateCost = openHash.find(state)->second;
             openHash.erase(state);
-            closeHash.insert(pair<State<T>*, int>(state, index));
+            closeHash.insert(pair<State<T>*, double>(state, state->getCost()));
             close.push_back(state);
             this->nodesEvaluated++;
-            index++;
 
             if(state->equals(goal)){
                 this->nodesEvaluated++;
@@ -101,24 +98,26 @@ public:
                 int tempJ = stoi(strtok(NULL, ","));
 
                 double h = abs(tempI - goalI) + abs(tempJ - goalJ);
-                double g = temp->getCost() + state->getCost();
-                temp->setCost(g + h);
+                double g = temp->getCost() + stateCost;
+                //temp->setCost(g + h);
                 if (closeHash.count(temp)){
-                    State<T>* tempForCost = closeHash.find(temp)->first;
-                    if (temp->getCost() >= tempForCost->getCost()){
+                    double tempCost = closeHash.find(temp)->second + stateCost + h;
+                    if (temp->getCost() >= tempCost){
                         continue;
                     }
-                } else if ((openHash.count(temp)) && (temp->getCost() >= openHash.find(temp)->first.getCost())){
-                    continue;
+                } else if (openHash.count(temp)) {
+                    double tempCost = openHash.find(temp)->second;
+                    if (temp->getCost() >= tempCost){
+                        continue;
+                    }
                 } else {
                     open.push_back(temp);
                     temp->setParent(state);
-                    openHash.insert(temp);
+                    openHash.insert(pair<State<T>*, double>(toSearch->getInitialState(), temp->getCost()));
                 }
             }
         }
     }
-
 };
 
 #endif //PROJ2_ASTAR_H

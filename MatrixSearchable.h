@@ -42,24 +42,18 @@ public:
         char* divide = const_cast<char *>(name.c_str());
         int i = stoi(strtok(divide, ","));
         int j = stoi(strtok(NULL, ","));
-/*
-        matrix[i][j + 1]; //right
-        matrix[i - 1][j]; //up
-        matrix[i + 1][j]; //down
-        matrix[i][j - 1]; //left
-        */
 
+        if ((j + 1) <= (matrix[0].size() - 1)){
+            succerssors.push_back(matrix[i][j + 1]); //right
+        }
+        if ((j - 1) >= 0){
+            succerssors.push_back(matrix[i][j - 1]); //left
+        }
         if ((i + 1) <= (this->rowCount - 1)){
             succerssors.push_back(matrix[i + 1][j]); //down
         }
         if ((i - 1) >= 0){
             succerssors.push_back(matrix[i - 1][j]); //up
-        }
-        if ((j - 1) >= 0){
-            succerssors.push_back(matrix[i][j - 1]); //left
-        }
-        if ((j + 1) <= (matrix[0].size() - 1)){
-            succerssors.push_back(matrix[i][j + 1]); //left
         }
 
         return succerssors;
