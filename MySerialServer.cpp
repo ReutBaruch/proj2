@@ -129,7 +129,7 @@ static void isTimeOut(){
 void MySerialServer::start(ClientHandler* client){
     struct sockaddr_in cli_addr;
 	int newsockfd, clilen = sizeof(cli_addr);
-	while (run) {
+	while (runner) {
 		/* Accept actual connection from the client */
 		cout << "waiting for a connection..." << endl;
 		newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, (socklen_t *)&clilen);
