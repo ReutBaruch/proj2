@@ -54,7 +54,7 @@ void* runClient(void* args){
 void MySerialServer::open(int port, ClientHandler* client){
 
     int sockfd, newsockfd, portno, clilen;
-
+    char buffer[100];
     struct sockaddr_in serv_addr, cli_addr;
 
     /* First call to socket() function */
@@ -71,7 +71,8 @@ void MySerialServer::open(int port, ClientHandler* client){
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons((uint16_t)((size_t)portno));
+    serv_addr.sin_port = htons(port);
+    //++serv_addr.sin_port = htons((uint16_t)((size_t)portno));
 
     /* Now bind the host address using bind() call.*/
     if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
@@ -105,4 +106,17 @@ bool MySerialServer::stop(int sockfd){
     return true;
 }
 
-
+static void isTimeOut(){
+    time_t start, finish;
+    double getTine=0;
+    
+    //start the count the seconds
+    time (&start);
+    do{
+        time(&finish);
+        
+        getTime= difftime(finish, start);
+    //wait for 20 second to get data from the client
+    }while (getTime<20)
+    }
+}
