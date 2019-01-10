@@ -15,6 +15,10 @@
 
 #define WAIT_FOR_CLIENT 600;
 
+MySerialServer::MySerialServer(){
+    this->runner=true;
+}
+
 struct socketArgs {
 //    template <class InputStream, class OutputStream>
     int newsockfd;
@@ -103,6 +107,7 @@ void MySerialServer::open(int port, ClientHandler* client){
 bool MySerialServer::stop(int sockfd){
     close(sockfd);
   //  close(newsockfd);
+    this->runner=false;
     return true;
 }
 
@@ -119,4 +124,27 @@ static void isTimeOut(){
     //wait for 20 second to get data from the client
     }while (getTime<20)
     }
+}
+
+void MySerialServer::start(ClientHandler* client){
+    struct sockaddr_in cli_addr;
+	int newsockfd, clilen = sizeof(cli_addr);
+	while (run) {
+		/* Accept actual connection from the client */
+		cout << "waiting for a connection..." << endl;
+		newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, (socklen_t *)&clilen);
+		cout << "got connection!!" << endl;
+		if (newsockfd < 0) {
+			if (errno == EWOULDBLOCK) {
+				cout << "Timeout!"<<endl;
+				exit(2);
+			}
+			else {
+				perror("ERROR");
+				exit(1);
+			}
+		}
+		handleClient(newsockfd, ch);
+	}
+}
 }
