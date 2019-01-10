@@ -5,6 +5,7 @@
 
 using namespace server_side;
 class MySerialServer: public Server{
+    bool runner=true;
 
 public:
     virtual void open(int port,ClientHandler* clientHandler);
