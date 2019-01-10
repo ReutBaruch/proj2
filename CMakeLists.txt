@@ -4,4 +4,4 @@ project(proj2)
 #set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "-std=c++14 -pthread")
 
-add_executable(proj2 main.cpp Server.h MySerialServer.cpp MySerialServer.h ClientHandler.h Solver.h MyTestClientHandler.cpp MyTestClientHandler.h CacheManager.h FileCacheManager.cpp FileCacheManager.h StringReverse.cpp StringReverse.h State.h Searchable.h Searcher.h BFS.h MatrixSolver.cpp MatrixSolver.h MatrixSearchable.cpp MatrixSearchable.h State.cpp BestFS.h Astar.h)
+add_executable(proj2 main.cpp Server.h MySerialServer.cpp MySerialServer.h ClientHandler.h Solver.h MyTestClientHandler.cpp MyTestClientHandler.h CacheManager.h FileCacheManager.cpp FileCacheManager.h StringReverse.cpp StringReverse.h State.h Searchable.h Searcher.h BFS.h MatrixSolver.cpp MatrixSolver.h MatrixSearchable.cpp MatrixSearchable.h State.cpp BestFS.h Astar.h MyClientHandler.cpp MyClientHandler.h)

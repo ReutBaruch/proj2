@@ -57,26 +57,33 @@ public:
 
     void recursive(State<T>* state,unordered_set<State<T>*> close, Searchable<T>* searchable) {
         list<State<T>*> successors;
-        close.insert(state);
         this->nodesEvaluated++;
+        State<T>* temp;
+
+        if (state->equals(searchable->getGoalState())){
+            return;
+        }
         successors = searchable->getAllPossibleStates(state);
         while (!successors.empty()) {
-            State<T>* temp = successors.front();
+            temp = successors.front();
             successors.pop_front();
-            if (!close.count(temp)) {
+            if (!close.count(temp)){// && (!temp->equals(searchable->getGoalState()))) {
+                close.insert(temp);
                 temp->setParent(state);
                 recursive(temp, close, searchable);
+                //this->nodesEvaluated++;
             }
         }
+      //  recursive(temp, close, searchable);
     }
 
     string search(Searchable<T>* toSearch) {
         unordered_set<State<T>*> close;
         State<T>* start = toSearch->getInitialState();
+        close.insert(start);
         this->recursive(start,close,toSearch);
         return this->backTrace(toSearch->getGoalState(), toSearch);
     }
-
 };
 
 #endif //PROJ2_DFS_H

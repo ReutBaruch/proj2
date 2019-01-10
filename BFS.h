@@ -89,7 +89,6 @@ public:
                 } else if (openHash.count(temp)){
                     temp->setParent(state);
                     close.insert(temp);
-                    this->nodesEvaluated++;
                     openHash.erase(temp);
                 }
             }

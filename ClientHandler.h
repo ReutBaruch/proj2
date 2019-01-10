@@ -3,10 +3,7 @@
 
 #include <iostream>
 #include <fstream>
-//#include "InputStream.h"
-//#include "OutputStream.h"
 
-//template <class InputStream, class OutputStream>
 class ClientHandler{
 
 public:

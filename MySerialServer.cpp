@@ -32,22 +32,22 @@ void* runClient(void* args){
     struct socketArgs* param = (struct socketArgs*) args;
 
     while(true) {
-        //setting timeout - if over don't wait for client anymore
-      //  if (select(0, NULL, NULL, NULL, &timeout) > 0) {
-            /* Accept actual connection from the client */
-            param->newsockfd = accept(param->sockfd, (struct sockaddr *) &(param->cli_addr),
-                    (socklen_t*) &(param->clilen));
-            if (param->newsockfd < 0) {
+        setsockopt(param->sockfd, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout));
+        /* Accept actual connection from the client */
+        param->newsockfd = accept(param->sockfd, (struct sockaddr *) &(param->cli_addr),
+                                  (socklen_t *) &(param->clilen));
+        if (param->newsockfd < 0) {
+            if (errno == EWOULDBLOCK){
+                printf("timeout\n");
+                exit(2);
+            } else {
                 perror("ERROR on accept");
                 exit(1);
             }
-            printf("connected");
-            param->clientHandler->handleClient(param->newsockfd);
-            printf("serverrr\n");
-    /*    } else {
-            printf("timeout");
-            break;
-        }*/
+        }
+        printf("connected");
+        param->clientHandler->handleClient(param->newsockfd);
+        printf("serverrr\n");
     }
 }
 

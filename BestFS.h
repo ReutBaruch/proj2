@@ -58,20 +58,16 @@ public:
     list<State<T>*> sort(list<State<T>*> open, State<T>* state){
         list<State<T>*> result;
         State<T>* stateOpen;
-        while(!open.empty()){
+        if (open.empty()){
+           result.push_back(state);
+        } else {
             stateOpen = open.front();
             open.pop_front();
             if (stateOpen->getCost() >= state->getCost()){
                 result.push_back(state);
-                break;
             } else {
                 result.push_back(stateOpen);
             }
-        }
-        while(!open.empty()){
-            stateOpen = open.front();
-            open.pop_front();
-            result.push_back(stateOpen);
         }
 
         return result;
@@ -79,23 +75,19 @@ public:
 
     string search(Searchable<T>* toSearch){
         list<State<T>*> open;
-        unordered_set<State<T>*> openHash;
         unordered_set<State<T>*> close;
         list<State<T>*> backTraceList;
         State<T>* goal = toSearch->getGoalState();
 
         open.push_back(toSearch->getInitialState());
-        openHash.insert(toSearch->getInitialState());
 
         while(!open.empty()){
             State<T>* state = open.front();
             open.pop_front();
-            openHash.erase(state);
             close.insert(state);
             this->nodesEvaluated++;
 
             if(state->equals(goal)){
-                this->nodesEvaluated++;
                 return this->backTrace(state, toSearch);
             }
 
@@ -104,17 +96,9 @@ public:
             while (!succerssors.empty()){
                 State<T>* temp = succerssors.front();
                 succerssors.pop_front();
-                if ((!close.count(temp)) && (!openHash.count(temp))){
-                    open.push_back(temp);
+                if (!close.count(temp)){
                     temp->setParent(state);
-                    openHash.insert(temp);
-                    temp->setCost(temp->getCost() + state->getCost());
                     open = sort(open, temp);
-                } else if (openHash.count(temp)){
-                    temp->setParent(state);
-                    close.insert(temp);
-                    this->nodesEvaluated++;
-                    openHash.erase(temp);
                 }
             }
         }

@@ -58,9 +58,7 @@ public:
 
     string search(Searchable<T>* toSearch){
         list<State<T>*> open;
-        map<State<T>*, double> openHash;
-        map<State<T>*, double> closeHash;
-        list<State<T>*> close;
+        map<State<T>*, double> costHash;
         list<State<T>*> backTraceList;
         State<T>* goal = toSearch->getGoalState();
 
@@ -70,15 +68,12 @@ public:
         int goalJ = stoi(strtok(NULL, ","));
 
         open.push_back(toSearch->getInitialState());
-        openHash.insert(pair<State<T>*, double>(toSearch->getInitialState(), toSearch->getInitialState()->getCost()));
+        costHash.insert(pair<State<T>*, double>(toSearch->getInitialState(), toSearch->getInitialState()->getCost()));
 
         while(!open.empty()){
             State<T>* state = open.front();
             open.pop_front();
-            double stateCost = openHash.find(state)->second;
-            openHash.erase(state);
-            closeHash.insert(pair<State<T>*, double>(state, state->getCost()));
-            close.push_back(state);
+            double stateCost = costHash.find(state)->second;
             this->nodesEvaluated++;
 
             if(state->equals(goal)){
@@ -99,21 +94,18 @@ public:
 
                 double h = abs(tempI - goalI) + abs(tempJ - goalJ);
                 double g = temp->getCost() + stateCost;
-                //temp->setCost(g + h);
-                if (closeHash.count(temp)){
-                    double tempCost = closeHash.find(temp)->second + stateCost + h;
-                    if (temp->getCost() >= tempCost){
-                        continue;
-                    }
-                } else if (openHash.count(temp)) {
-                    double tempCost = openHash.find(temp)->second;
-                    if (temp->getCost() >= tempCost){
-                        continue;
+                double newCost = h + g;
+
+                if (costHash.count(temp)) {
+                    double preCost = costHash.find(temp)->second;
+                    if (newCost < preCost){
+                        temp->setParent(state);
+                        costHash.insert(pair<State<T>*, double>(temp, newCost));
                     }
                 } else {
                     open.push_back(temp);
                     temp->setParent(state);
-                    openHash.insert(pair<State<T>*, double>(toSearch->getInitialState(), temp->getCost()));
+                    costHash.insert(pair<State<T>*, double>(temp, newCost));
                 }
             }
         }
