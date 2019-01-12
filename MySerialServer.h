@@ -9,7 +9,7 @@ class MySerialServer: public Server{
 
 public:
     virtual void open(int port,ClientHandler* clientHandler);
-    virtual bool stop(int sockfd);
+    virtual void stop(int sockfd);
 };
 
 

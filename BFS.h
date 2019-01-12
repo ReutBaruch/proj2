@@ -93,6 +93,8 @@ public:
                 }
             }
         }
+        printf("No route found.");
+        exit(3);
     }
 
     int getNumberOfNodesEvaluated(){

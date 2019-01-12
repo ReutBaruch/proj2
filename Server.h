@@ -9,7 +9,7 @@ namespace server_side{
     public:
 
         virtual void open(int port,ClientHandler* clientHandler) = 0;
-        virtual bool stop(int sockfd) = 0;
+        virtual void stop(int sockfd) = 0;
     };
 }
 

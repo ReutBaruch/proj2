@@ -13,11 +13,7 @@
 #include <pthread.h>
 #include <time.h>
 
-#define WAIT_FOR_CLIENT 600;
-
-MySerialServer::MySerialServer(){
-    this->runner=true;
-}
+#define WAIT_FOR_CLIENT 60;
 
 struct socketArgs {
 //    template <class InputStream, class OutputStream>
@@ -49,16 +45,18 @@ void* runClient(void* args){
                 exit(1);
             }
         }
-        printf("connected");
+        printf("connected\n");
         param->clientHandler->handleClient(param->newsockfd);
         printf("serverrr\n");
+//        param->clientHandler->handleClient(param->newsockfd);
+        close(param->newsockfd);
     }
 }
 
 void MySerialServer::open(int port, ClientHandler* client){
 
     int sockfd, newsockfd, portno, clilen;
-    char buffer[100];
+
     struct sockaddr_in serv_addr, cli_addr;
 
     /* First call to socket() function */
@@ -75,8 +73,7 @@ void MySerialServer::open(int port, ClientHandler* client){
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(port);
-    //++serv_addr.sin_port = htons((uint16_t)((size_t)portno));
+    serv_addr.sin_port = htons((uint16_t)((size_t)portno));
 
     /* Now bind the host address using bind() call.*/
     if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
@@ -104,47 +101,8 @@ void MySerialServer::open(int port, ClientHandler* client){
     this->stop(sockfd);
 };
 
-bool MySerialServer::stop(int sockfd){
+void MySerialServer::stop(int sockfd){
     close(sockfd);
-  //  close(newsockfd);
-    this->runner=false;
-    return true;
 }
 
-static void isTimeOut(){
-    time_t start, finish;
-    double getTine=0;
-    
-    //start the count the seconds
-    time (&start);
-    do{
-        time(&finish);
-        
-        getTime= difftime(finish, start);
-    //wait for 20 second to get data from the client
-    }while (getTime<20)
-    }
-}
 
-void MySerialServer::start(ClientHandler* client){
-    struct sockaddr_in cli_addr;
-	int newsockfd, clilen = sizeof(cli_addr);
-	while (runner) {
-		/* Accept actual connection from the client */
-		cout << "waiting for a connection..." << endl;
-		newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, (socklen_t *)&clilen);
-		cout << "got connection!!" << endl;
-		if (newsockfd < 0) {
-			if (errno == EWOULDBLOCK) {
-				cout << "Timeout!"<<endl;
-				exit(2);
-			}
-			else {
-				perror("ERROR");
-				exit(1);
-			}
-		}
-		handleClient(newsockfd, ch);
-	}
-}
-}

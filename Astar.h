@@ -109,6 +109,8 @@ public:
                 }
             }
         }
+        printf("No route found.");
+        exit(3);
     }
 };
 

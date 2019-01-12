@@ -77,13 +77,51 @@ public:
       //  recursive(temp, close, searchable);
     }
 
-    string search(Searchable<T>* toSearch) {
+    /*string search(Searchable<T>* toSearch) {
         unordered_set<State<T>*> close;
         State<T>* start = toSearch->getInitialState();
         close.insert(start);
         this->recursive(start,close,toSearch);
         return this->backTrace(toSearch->getGoalState(), toSearch);
+    }*/
+
+    string search(Searchable<T>* toSearch) {
+        list<State<T>*> open;
+        unordered_set<State<T>*> close;
+        State<T>* state;
+        State<T>* temp;
+        State<T>* goal = toSearch->getGoalState();
+        State<T>* start = toSearch->getInitialState();
+        open.push_back(start);
+
+        while (!open.empty()){
+            state = open.front();
+            open.pop_front();
+
+            if(state->equals(goal)){
+                return this->backTrace(state, toSearch);
+            }
+
+            if (!close.count(state)){
+                close.insert(state);
+                this->nodesEvaluated++;
+
+                list<State<T>*> succerssors = toSearch->getAllPossibleStates(state);
+
+                while (!succerssors.empty()){
+                    temp = succerssors.front();
+                    succerssors.pop_front();
+                    if(close.count(temp))
+                        continue;
+                    temp->setParent(state);
+                    open.push_back(temp);
+                }
+            }
+        }
+        printf("No route found.");
+        exit(3);
     }
+
 };
 
 #endif //PROJ2_DFS_H

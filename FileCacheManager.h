@@ -61,6 +61,7 @@ public:
     virtual void saveSolution(string solution, string problem){
         this->problemsAndSolutions.insert(pair<string, string>(problem, solution));
     }
+
     ~FileCacheManager(){
         writeFile();
     }
