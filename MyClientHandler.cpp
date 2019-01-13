@@ -72,10 +72,7 @@ void MyClientHandler<string, string>::handleClient(int newSockFD) {
     char *bufferWrite = const_cast<char *>(solution.c_str());
 
     n = write(newSockFD, bufferWrite, 1024);
-    /* if (n < 0) {
-         perror("ERROR writing to socket");
-         exit(1);
-     }*/
+
     //cout << "write:" << endl;
     //cout << bufferWrite << endl;
     close(newSockFD);

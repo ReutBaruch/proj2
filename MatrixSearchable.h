@@ -17,6 +17,7 @@ class MatrixSearchable: public Searchable<T>{
     int rowCount;
 
 public:
+
     MatrixSearchable(){
         this->rowCount = 0;
     }
@@ -143,6 +144,10 @@ public:
 
     State<T>* getStateByIndex(int row, int col){
         return this->matrix[row][col];
+    }
+
+    ~MatrixSearchable(){
+        //TODO delete vector
     }
 
 };

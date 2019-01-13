@@ -31,6 +31,7 @@ public:
             }
         }
     }
+
     void writeFile(){
         ofstream myFile("ProbAndSolv.txt", ios::trunc);
         string line;

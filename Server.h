@@ -3,6 +3,7 @@
 
 #include "ClientHandler.h"
 
+
 namespace server_side{
     class Server{
 
@@ -12,6 +13,8 @@ namespace server_side{
         virtual void stop(int sockfd) = 0;
     };
 }
+
+
 
 
 #endif //PROJ2_SERVER_H
