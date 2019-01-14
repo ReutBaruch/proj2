@@ -22,8 +22,6 @@ void MyTestClientHandler<string, string>::handleClient(int newSockFD) {
             perror("ERROR reading from socket");
             exit(1);
         }
-        cout << "read:";
-        cout << buffer << endl;
 
         problem = string(buffer);
 
@@ -35,18 +33,17 @@ void MyTestClientHandler<string, string>::handleClient(int newSockFD) {
             solution = this->cacheManager->getSolution(problem);
         } else {
             solution = this->solver->solve(problem);
-            printf("solve\n");
             this->cacheManager->saveSolution(solution, problem);
         }
 
-        char* bufferWrite = const_cast<char*>(solution.c_str());
+        char bufferWrite[1024];
+        bzero(bufferWrite, 1025);
+        strcpy(bufferWrite, solution.c_str());
+        ssize_t nBuffer = write(newSockFD, bufferWrite, strlen(bufferWrite));
 
-        n = write(newSockFD, bufferWrite, sizeof(bufferWrite));
-        if (n < 0) {
+        if (nBuffer < 0) {
             perror("ERROR writing to socket");
             exit(1);
         }
-        cout << "write:";
-        cout << buffer << endl;
     }
 }

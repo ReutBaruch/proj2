@@ -5,6 +5,7 @@
 #include <list>
 #include <string.h>
 #include "BackTrace.h"
+#include "Searcher.h"
 
 using namespace std;
 template <class Solution, class T>

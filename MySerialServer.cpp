@@ -45,9 +45,7 @@ void* runClient(void* args){
                 return 0;
             }
         }
-        printf("connected\n");
         param->clientHandler->handleClient(param->newsockfd);
-        printf("serverrr\n");
 //        param->clientHandler->handleClient(param->newsockfd);
         close(param->newsockfd);
     }

@@ -6,6 +6,7 @@
 #include <list>
 #include <string.h>
 #include "BackTrace.h"
+#include <map>
 
 using namespace std;
 template <class Solution, class T>

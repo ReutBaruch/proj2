@@ -30,14 +30,13 @@ namespace boot{
                     MatrixSolver<string, string, string>(searcher);
             CacheManager<string, string>* cache = new FileCacheManager<string, string>();
             ClientHandler* client = new MyClientHandler<string, string>(cache, solver);
-            cout << "start server" << endl;
-            myServer->open(port, client);
-            cout << "sever end" << endl;
 
-            delete myServer;
+            myServer->open(port, client);
+
             delete searcher;
-            delete solver;
             delete cache;
+            delete solver;
+            delete myServer;
             delete client;
 
             return 0;

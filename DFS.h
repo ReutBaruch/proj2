@@ -3,6 +3,7 @@
 
 #include "Searcher.h"
 #include "BackTrace.h"
+#include <unordered_set>
 
 using namespace std;
 template <class Solution, class T>

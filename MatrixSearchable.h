@@ -112,16 +112,18 @@ public:
             temp = strtok(NULL, ";");
         }
 
+        int size = strings.size();
+        int count = 0;
+
         list<string>::iterator it;
         it = strings.begin();
 
-        while ((*it) != "end") {
+        while (count != size - 3) {
             string newRow = (*it);
             this->addRowToMatrix(newRow);
             it++;
+            count++;
         }
-
-        it++;
 
         //the last values will be the initial state and the goal state
         string start = (*it);
@@ -132,11 +134,10 @@ public:
 
         setInitialState(this->getStateByIndex(i, j));
         it++;
-        //end spot
+
         start = *it;
         temp = const_cast<char*>(start.c_str());
 
-        //temp = strtok(temp, ";");
 
         i = stoi(strtok(temp, ","));
         j = stoi(strtok(NULL, ","));

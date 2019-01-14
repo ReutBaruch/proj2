@@ -1,5 +1,9 @@
 #include "MyParallerServer.h"
-#define WAIT_FOR_CLIENT 60
+#define WAIT_FOR_CLIENT 1
+#define WAIT_FOREVER 0
+
+#include <vector>
+using namespace std;
 
 //Client struct
 struct client{
@@ -29,20 +33,22 @@ void* clientThread(void *arg) {
     struct client* clientStruct=(struct client*) arg;
     //Handle client
     clientStruct->clientHandler->handleClient(clientStruct->newSockFd);
-   // close(clientStruct->newSockFd);
+
    return 0;
 }
 
 /**
  * The function open a socket server and listen to multiple clients simultaneously
  */
-void* multupleClients(void *args) {
+void* multipleClients(void *args) {
     struct params* openSocket = (struct params *) args;
     timeval timeout;
     timeout.tv_sec = WAIT_FOR_CLIENT;
     timeout.tv_usec = 0;
-//    char buffer[256];
-//    int n;
+    timeval timeForever;
+    timeForever.tv_sec = WAIT_FOREVER;
+    timeForever.tv_usec = 0;
+    vector<pthread_t> closeThread;
 
     //Wait for connection from the first client
     struct client* clientStruct = new client();
@@ -50,7 +56,6 @@ void* multupleClients(void *args) {
     openSocket->newSockFd = accept(openSocket->sockFd,
                                    (struct sockaddr *) &openSocket->client_addr,
                                    (socklen_t *) &openSocket->client);
-    printf("client coonected\n");
 
     if (openSocket->newSockFd < 0) {
         perror("ERROR on accept");
@@ -59,8 +64,10 @@ void* multupleClients(void *args) {
 
     //Open a thread to talk to the client
     clientStruct->newSockFd = openSocket->newSockFd;
+    setsockopt(openSocket->newSockFd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeForever, sizeof(timeForever));
     pthread_t pthread;
     pthread_create(&pthread, nullptr, clientThread, clientStruct);
+    closeThread.push_back(pthread);
 
     //While there are more clients
     while (true) {
@@ -70,24 +77,32 @@ void* multupleClients(void *args) {
         openSocket->newSockFd = accept(openSocket->sockFd,
                                        (struct sockaddr *) &openSocket->client_addr,
                                        (socklen_t *) &openSocket->client);
+
         //If the client failed to connect or the time ended clise the sever
         if (openSocket->newSockFd < 0) {
             if (errno == EWOULDBLOCK){
                 printf("timeout\n");
-                //close(clientStruct->newSockFd);
-                delete clientStruct;
-                return 0;
+                break;
             } else {
                 perror("ERROR on accept");
-                return 0;
+                break;
             }
         }
 
         //Open a thread to talk to the client
-        clientStruct->newSockFd=openSocket->newSockFd;
+        clientStruct->newSockFd = openSocket->newSockFd;
+        setsockopt(openSocket->newSockFd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeForever, sizeof(timeForever));
         pthread_t pthread;
         pthread_create(&pthread, nullptr, clientThread, clientStruct);
+        closeThread.push_back(pthread);
     }
+
+    int size = closeThread.size();
+    for (int i = 0; i < size; i++){
+        pthread_join(closeThread[i], NULL);
+    }
+
+    delete clientStruct;
     return 0;
 }
 
@@ -133,10 +148,10 @@ void MyParallerServer::open(int port, ClientHandler *clientHandler) {
 
     //Open a thread to the server
     pthread_t pthread;
-    pthread_create(&pthread, nullptr, multupleClients, openSocket);
+    pthread_create(&pthread, nullptr, multipleClients, openSocket);
     pthread_join(pthread,NULL);
-    delete openSocket;
     stop(openSocket->sockFd);
+    delete openSocket;
     //pthread_exit(NULL);
 }
 

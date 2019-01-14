@@ -21,21 +21,14 @@ public:
     void readFile(){
         ifstream myFile("ProbAndSolv.txt");
         string line;
-        string problem, solution;
+        string problem = "";
+        string solution = "";
         if(myFile.is_open()){
             while (getline(myFile, line)){
                 char* c = const_cast<char*>(line.c_str());
-                c = strtok(c, ";");
-                while ((strcmp("end", c)) != 0){
-                    problem += c;
-                    problem += ";";
-                    c = strtok(NULL, ";");
-                }
+                c = strtok(c, "$");
                 problem += c;
-                problem += ";";
-                c = strtok(NULL, ";");
-                solution += c;
-                solution += ";";
+
                 c = strtok(NULL, ";");
                 solution += c;
 
@@ -48,17 +41,16 @@ public:
     void writeFile(string problem, string solution){
         ofstream myFile("ProbAndSolv.txt", ios::app);
         string line;
-        //string problem, solution;
+
         if(myFile.is_open()){
             myFile << problem ;
-            myFile << ";";
+            myFile << "$";
             myFile << solution;
             myFile <<"\n";
         }
     }
     virtual bool haveSolution(string problem){
         if (this->problemsAndSolutions.count(problem)){
-            printf("chace\n");
             return true;
         }
         else {
