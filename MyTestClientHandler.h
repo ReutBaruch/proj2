@@ -13,6 +13,7 @@ class MyTestClientHandler : public ClientHandler {
 public:
     MyTestClientHandler(CacheManager<string, string>* cacheManager, Solver<string, string>* solver);
     virtual void handleClient(int newSockFD);
+    virtual ~MyTestClientHandler(){};
 
 };
 

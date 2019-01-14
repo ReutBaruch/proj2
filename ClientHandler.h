@@ -8,6 +8,7 @@ class ClientHandler{
 
 public:
     virtual void handleClient(int newSockFd) = 0;
+    virtual ~ClientHandler(){};
 };
 
 #endif //PROJ2_CLIENTHANDLER_H

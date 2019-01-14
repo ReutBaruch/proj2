@@ -1,5 +1,5 @@
 #include "MyParallerServer.h"
-#define WAIT_FOR_CLIENT 100
+#define WAIT_FOR_CLIENT 60
 
 //Client struct
 struct client{
@@ -29,7 +29,8 @@ void* clientThread(void *arg) {
     struct client* clientStruct=(struct client*) arg;
     //Handle client
     clientStruct->clientHandler->handleClient(clientStruct->newSockFd);
-    close(clientStruct->newSockFd);
+   // close(clientStruct->newSockFd);
+   return 0;
 }
 
 /**
@@ -40,11 +41,11 @@ void* multupleClients(void *args) {
     timeval timeout;
     timeout.tv_sec = WAIT_FOR_CLIENT;
     timeout.tv_usec = 0;
-    char buffer[256];
-    int n;
+//    char buffer[256];
+//    int n;
 
     //Wait for connection from the first client
-    struct client* clientStruct=new client();
+    struct client* clientStruct = new client();
     clientStruct->clientHandler=openSocket->clientHandler;
     openSocket->newSockFd = accept(openSocket->sockFd,
                                    (struct sockaddr *) &openSocket->client_addr,
@@ -53,7 +54,7 @@ void* multupleClients(void *args) {
 
     if (openSocket->newSockFd < 0) {
         perror("ERROR on accept");
-        exit(1);
+        return 0;
     }
 
     //Open a thread to talk to the client
@@ -73,10 +74,12 @@ void* multupleClients(void *args) {
         if (openSocket->newSockFd < 0) {
             if (errno == EWOULDBLOCK){
                 printf("timeout\n");
-                exit(2);
+                //close(clientStruct->newSockFd);
+                delete clientStruct;
+                return 0;
             } else {
                 perror("ERROR on accept");
-                exit(1);
+                return 0;
             }
         }
 
@@ -84,15 +87,16 @@ void* multupleClients(void *args) {
         clientStruct->newSockFd=openSocket->newSockFd;
         pthread_t pthread;
         pthread_create(&pthread, nullptr, clientThread, clientStruct);
-
     }
+    return 0;
 }
 
 /**
  * The function open thread to open a server and listen to multiple clients simultaneously
  */
 void MyParallerServer::open(int port, ClientHandler *clientHandler) {
-    int sockfd, newsockfd, portno, clilen;
+    int newsockfd = 0;
+    int sockfd, portno, clilen;
     struct sockaddr_in serv_addr, cli_addr;
     struct params* openSocket = new params();
 
@@ -131,8 +135,9 @@ void MyParallerServer::open(int port, ClientHandler *clientHandler) {
     pthread_t pthread;
     pthread_create(&pthread, nullptr, multupleClients, openSocket);
     pthread_join(pthread,NULL);
-    pthread_exit(NULL);
-    //stop(openSocket->sockFd);
+    delete openSocket;
+    stop(openSocket->sockFd);
+    //pthread_exit(NULL);
 }
 
 void MyParallerServer::stop(int socketFd) {

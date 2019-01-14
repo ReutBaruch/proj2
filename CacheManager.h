@@ -12,7 +12,7 @@ public:
     virtual bool haveSolution(Problem problem) = 0;
     virtual Solution getSolution(Problem problem) = 0;
     virtual void saveSolution(Solution solution, Problem problem) = 0;
-    ~CacheManager(){};
+    virtual ~CacheManager(){};
 };
 
 

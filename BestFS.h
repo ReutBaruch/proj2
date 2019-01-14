@@ -6,15 +6,23 @@
 #include <string.h>
 #include "BackTrace.h"
 
+using namespace std;
 template <class Solution, class T>
 class BestFS: public Searcher<Solution, T> {
     int nodesEvaluated;
     BackTrace<T>* back;
+    double cost;
 
 public:
     BestFS(){
         this->nodesEvaluated = 0;
     }
+
+    double getCost(){
+        return this->cost;
+    }
+
+    virtual ~BestFS(){};
 
     int getNumberOfNodesEvaluated(){
         return this->nodesEvaluated;
@@ -54,7 +62,7 @@ public:
             this->nodesEvaluated++;
 
             if(state->equals(goal)){
-                return this->back->backTrace(state, toSearch);
+                return this->back->backTrace(state, toSearch, cost);
             }
 
             list<State<T>*> succerssors = toSearch->getAllPossibleStates(state);
@@ -63,13 +71,31 @@ public:
                 State<T>* temp = succerssors.front();
                 succerssors.pop_front();
                 if (!close.count(temp)){
+
+                    string name = temp->getState();
+                    string parentName = state->getState();
+
+                    char *divide = const_cast<char *>(name.c_str());
+                    int childI = stoi(strtok(divide, ","));
+                    int childJ = stoi(strtok(NULL, ","));
+
+                    char *divideParent = const_cast<char *>(parentName.c_str());
+                    int parentI = stoi(strtok(divideParent, ","));
+                    int parentJ = stoi(strtok(NULL, ","));
+
+                    if (childJ < parentJ) {
+                        continue;
+                    }
+                    if (childI < parentI){
+                        continue;
+                    }
                     temp->setParent(state);
                     open = sort(open, temp);
                 }
             }
         }
         printf("No route found.");
-        exit(3);
+        return "-1";
     }
 
 };

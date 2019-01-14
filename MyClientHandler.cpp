@@ -43,6 +43,7 @@ void MyClientHandler<string, string>::handleClient(int newSockFD) {
         perror("ERROR reading from socket");
         exit(1);
     }
+
     cout << "read:";
     cout << buffer << endl;
 
@@ -56,8 +57,9 @@ void MyClientHandler<string, string>::handleClient(int newSockFD) {
         perror("ERROR reading from socket");
         exit(1);
     }
-    //cout << "read:";
-    //cout << buffer << endl;
+
+    cout << "read:";
+    cout << buffer << endl;
 
     problem += string(buffer);
 
@@ -72,8 +74,12 @@ void MyClientHandler<string, string>::handleClient(int newSockFD) {
     char *bufferWrite = const_cast<char *>(solution.c_str());
 
     n = write(newSockFD, bufferWrite, 1024);
+    if (n < 0) {
+        perror("ERROR reading from socket");
+        exit(1);
+    }
 
-    //cout << "write:" << endl;
-    //cout << bufferWrite << endl;
-    close(newSockFD);
+    cout << "write:" << endl;
+    cout << bufferWrite << endl;
+  //  close(newSockFD);
 }

@@ -7,16 +7,25 @@
 #include <string.h>
 #include "BackTrace.h"
 
+using namespace std;
 template <class Solution, class T>
 class Astar: public Searcher<Solution, T> {
     int nodesEvaluated;
     BackTrace<T>* back;
+    double cost;
 
 
 public:
     Astar() {
         this->nodesEvaluated = 0;
+        cost = -1;
     }
+
+    double getCost(){
+        return this->cost;
+    }
+
+    virtual ~Astar(){};
 
     int getNumberOfNodesEvaluated(){
         return this->nodesEvaluated;
@@ -43,7 +52,7 @@ public:
             this->nodesEvaluated++;
 
             if(state->equals(goal)){
-                return this->back->backTrace(state, toSearch);
+                return this->back->backTrace(state, toSearch, cost);
             }
 
             list<State<T>*> succerssors = toSearch->getAllPossibleStates(state);
@@ -75,7 +84,7 @@ public:
             }
         }
         printf("No route found.");
-        exit(3);
+        return "-1";
     }
 };
 

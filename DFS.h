@@ -9,6 +9,7 @@ template <class Solution, class T>
 class DFS: public Searcher<Solution, T> {
     int nodesEvaluated;
     BackTrace<T>* back;
+    double cost;
 
 
 public:
@@ -16,9 +17,15 @@ public:
         this->nodesEvaluated = 0;
     }
 
+    double getCost(){
+        return this->cost;
+    }
+
     int getNumberOfNodesEvaluated() {
         return this->nodesEvaluated;
     }
+
+    virtual ~DFS(){};
 
 
     string search(Searchable<T>* toSearch) {
@@ -35,7 +42,7 @@ public:
             open.pop_front();
 
             if(state->equals(goal)){
-                return this->back->backTrace(state, toSearch);
+                return this->back->backTrace(state, toSearch, cost);
             }
 
             if (!close.count(state)){
@@ -55,7 +62,7 @@ public:
             }
         }
         printf("No route found.");
-        exit(3);
+        return "-1";
     }
 
 };

@@ -11,6 +11,7 @@ namespace server_side{
 
         virtual void open(int port,ClientHandler* clientHandler) = 0;
         virtual void stop(int sockfd) = 0;
+        virtual ~Server(){};
     };
 }
 

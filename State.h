@@ -18,6 +18,8 @@ public:
         return this->cost;
     }
 
+    virtual ~State(){};
+
     bool equals(State<T>* s){
         if (this->state == s->getState()){
             return true;

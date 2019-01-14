@@ -25,25 +25,35 @@ public:
         if(myFile.is_open()){
             while (getline(myFile, line)){
                 char* c = const_cast<char*>(line.c_str());
-                problem = strtok(c, ";");
-                solution = strtok(NULL, ";");
+                c = strtok(c, ";");
+                while ((strcmp("end", c)) != 0){
+                    problem += c;
+                    problem += ";";
+                    c = strtok(NULL, ";");
+                }
+                problem += c;
+                problem += ";";
+                c = strtok(NULL, ";");
+                solution += c;
+                solution += ";";
+                c = strtok(NULL, ";");
+                solution += c;
+
                 this->problemsAndSolutions.insert(pair<string, string>(problem, solution));
             }
+            myFile.close();
         }
     }
 
-    void writeFile(){
-        ofstream myFile("ProbAndSolv.txt", ios::trunc);
+    void writeFile(string problem, string solution){
+        ofstream myFile("ProbAndSolv.txt", ios::app);
         string line;
-        string problem, solution;
+        //string problem, solution;
         if(myFile.is_open()){
-            map<string, string>::iterator it;
-            for(it = this->problemsAndSolutions.begin(); it != this->problemsAndSolutions.end(); it++){
-                myFile << (*it).first ;
-                myFile << ";";
-                myFile << (*it).second;
-                myFile <<"\n";
-            }
+            myFile << problem ;
+            myFile << ";";
+            myFile << solution;
+            myFile <<"\n";
         }
     }
     virtual bool haveSolution(string problem){
@@ -61,11 +71,10 @@ public:
     }
     virtual void saveSolution(string solution, string problem){
         this->problemsAndSolutions.insert(pair<string, string>(problem, solution));
+        writeFile(problem, solution);
     }
 
-    ~FileCacheManager(){
-        writeFile();
-    }
+    virtual ~FileCacheManager(){};
 
 };
 

@@ -39,10 +39,10 @@ void* runClient(void* args){
         if (param->newsockfd < 0) {
             if (errno == EWOULDBLOCK){
                 printf("timeout\n");
-                exit(2);
+                return 0;
             } else {
                 perror("ERROR on accept");
-                exit(1);
+                return 0;
             }
         }
         printf("connected\n");
@@ -55,7 +55,8 @@ void* runClient(void* args){
 
 void MySerialServer::open(int port, ClientHandler* client){
 
-    int sockfd, newsockfd, portno, clilen;
+    int newsockfd = 0;
+    int sockfd, portno, clilen;
 
     struct sockaddr_in serv_addr, cli_addr;
 

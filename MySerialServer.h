@@ -10,6 +10,7 @@ class MySerialServer: public Server{
 public:
     virtual void open(int port,ClientHandler* clientHandler);
     virtual void stop(int sockfd);
+    virtual ~MySerialServer(){};
 };
 
 

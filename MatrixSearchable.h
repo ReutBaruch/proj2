@@ -21,6 +21,7 @@ public:
     MatrixSearchable(){
         this->rowCount = 0;
     }
+
     State<T>* getInitialState(){
         return this->initialState;
     }
@@ -44,8 +45,9 @@ public:
         char* divide = const_cast<char *>(name.c_str());
         int i = stoi(strtok(divide, ","));
         int j = stoi(strtok(NULL, ","));
+        int matrixSize = matrix[0].size() - 1;
 
-        if ((j + 1) <= (matrix[0].size() - 1)){
+        if ((j + 1) <= matrixSize){
             temp = matrix[i][j + 1];
             if(temp->getCost() != -1) {
                 succerssors.push_back(matrix[i][j + 1]); //right
@@ -146,9 +148,16 @@ public:
         return this->matrix[row][col];
     }
 
-    ~MatrixSearchable(){
-        //TODO delete vector
-    }
+    virtual ~MatrixSearchable(){
+        int size = this->matrix.size();
+        for(int i = 0; i < size; ++i){
+            vector<State<string>*> temp = this->matrix[i];
+            int tempSize = temp.size();
+            for(int j = 0; j < tempSize; ++j){
+                delete temp[j];
+            }
+        }
+    };
 
 };
 

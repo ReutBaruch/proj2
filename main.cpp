@@ -21,14 +21,23 @@
 using namespace server_side;
 using namespace std;
 
+
+#include <string>
+#include <string.h>
+
+using namespace server_side;
+using namespace std;
+
+
 int main(int argc, char* argv[]){
 
-    boot::Main* m = new boot::Main();
+  /*  boot::StartMain* m = new boot::StartMain();
     m->main(argc, argv);
 
     delete (m);
-
-  /*  string tryy = "0,0,0,0;90,4,5,0;0,7,8,90;0,6,7,0;end;0,0;3,3";
+    pthread_exit(NULL);
+*/
+    string tryy = "1,-1;-1,1;end;0,0;1,1";
     //string tryy = "1,2,1,3,4;4,1,6,3,6;2,0,9,2,3;2,8,9,6,12;3,5,6,8,23;end;0,0;3,3";
     //string tryy = "1,-1,-1;-1,5,6;7,8,9;end;0,0;2,2";
     Searcher<string, string>* searcher22 = new BestFS<string, string>();
@@ -43,7 +52,7 @@ int main(int argc, char* argv[]){
     cout << "DFS path: " + gf << endl;
     int rresult = searcher22->getNumberOfNodesEvaluated();
     cout << "DFS tryy: " + to_string(rresult) << endl;
-*/
+
    /* int result;
     string count;
     string matrix = "";

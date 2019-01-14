@@ -10,6 +10,8 @@ class Searcher{
 public:
     virtual Solution search(Searchable<T>* toSearch) = 0;
     virtual int getNumberOfNodesEvaluated() = 0;
+    virtual double getCost() = 0;
+    virtual ~Searcher(){};
 
 };
 

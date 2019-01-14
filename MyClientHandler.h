@@ -14,6 +14,7 @@ class MyClientHandler: public ClientHandler{
 public:
     MyClientHandler(CacheManager<string, string>* cacheManager, Solver<string, string>* solver);
     virtual void handleClient(int newSockFD);
+    virtual ~MyClientHandler(){};
 
 };
 

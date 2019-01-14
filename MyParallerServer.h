@@ -32,6 +32,8 @@ public:
      */
     void stop(int socketFd);
 
+    virtual ~MyParallerServer(){};
+
 };
 
 #endif //PROJ2_MYPARALLERSERVER_H

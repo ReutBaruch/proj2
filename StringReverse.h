@@ -8,6 +8,7 @@ class StringReverse: public Solver<string, string> {
 public:
     StringReverse(){}
     string solve(string problem);
+    ~StringReverse(){};
 };
 
 #endif //PROJ2_STRINGREVERSE_H

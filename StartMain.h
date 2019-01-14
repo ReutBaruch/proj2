@@ -15,8 +15,9 @@
 
 
 namespace boot{
-    class Main{
+    class StartMain{
     public:
+        ~StartMain(){};
         int main(int argc, char* argv[]) {
             if(argc != 2){
                 printf("Invalid input");
@@ -32,6 +33,13 @@ namespace boot{
             cout << "start server" << endl;
             myServer->open(port, client);
             cout << "sever end" << endl;
+
+            delete myServer;
+            delete searcher;
+            delete solver;
+            delete cache;
+            delete client;
+
             return 0;
         }
     };

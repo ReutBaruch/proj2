@@ -13,11 +13,18 @@ template <class Solution, class T>
 class BFS: public Searcher<Solution, T> {
     int nodesEvaluated;
     BackTrace<T>* back;
+    double cost;
 
 public:
     BFS(){
         this->nodesEvaluated = 0;
     }
+
+    double getCost(){
+        return this->cost;
+    }
+
+    virtual ~BFS(){};
 
     string search(Searchable<T>* toSearch){
         list<State<T>*> open;
@@ -37,7 +44,7 @@ public:
             this->nodesEvaluated++;
 
             if(state->equals(goal)){
-                return this->back->backTrace(state, toSearch);
+                return this->back->backTrace(state, toSearch, cost);
             }
 
             list<State<T>*> succerssors = toSearch->getAllPossibleStates(state);
@@ -57,7 +64,7 @@ public:
             }
         }
         printf("No route found.");
-        exit(3);
+        return "-1";
     }
 
     int getNumberOfNodesEvaluated(){

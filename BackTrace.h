@@ -11,10 +11,13 @@ template <class T>
 class BackTrace{
 
 public:
-    string backTrace(State<T>* goal, Searchable<T>* toSearch) {
+
+    ~BackTrace(){};
+    string backTrace(State<T>* goal, Searchable<T>* toSearch, double &cost) {
         State<T> *start = toSearch->getInitialState();
         string result = "";
         list<State<T> *> backTraceList;
+        cost = goal->getCost();
 
         while (!goal->equals(start)) {
             string name = goal->getState();
@@ -41,6 +44,7 @@ public:
             result = ", " + result;
 
             goal = goal->getParent();
+            cost += goal->getCost();
         }
 
         result = result.substr(2);
