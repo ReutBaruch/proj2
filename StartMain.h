@@ -10,7 +10,7 @@
 #include "MyClientHandler.h"
 #include "CacheManager.h"
 #include "MatrixSolver.h"
-#include "BFS.h"
+#include "Astar.h"
 #include "FileCacheManager.h"
 
 //name space
@@ -31,7 +31,7 @@ namespace boot{
             //new server
             Server* myServer = new MyParallerServer();
             //choose to use the cheapest algorithm according to the 'solutions' file
-            Searcher<string, string>* searcher = new BFS<string, string>();
+            Searcher<string, string>* searcher = new Astar<string, string>();
             Solver<string, string>* solver = new
                     MatrixSolver<string, string, string>(searcher);
             CacheManager<string, string>* cache = new FileCacheManager<string, string>();

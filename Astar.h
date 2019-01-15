@@ -50,6 +50,7 @@ public:
      */
     string search(Searchable<T>* toSearch){
         list<State<T>*> open;
+        unordered_set<State<T>*> openHash;
         map<State<T>*, double> costHash;
         list<State<T>*> backTraceList;
         State<T>* goal = toSearch->getGoalState();
@@ -62,6 +63,7 @@ public:
 
         //get all nodes
         open.push_back(toSearch->getInitialState());
+        openHash.insert(toSearch->getInitialState());
         costHash.insert(pair<State<T>*, double>(toSearch->getInitialState(), toSearch->getInitialState()->getCost()));
 
         //go on all the nodes
@@ -69,6 +71,7 @@ public:
             //get the first
             State<T>* state = open.front();
             open.pop_front();
+            openHash.erase(state);
             //get the price
             double stateCost = costHash.find(state)->second;
             //count +1
@@ -98,15 +101,17 @@ public:
                 double newCost = h + g;
 
                 //dot visited
-                if (costHash.count(temp)) {
+                if ((costHash.count(temp)) || (openHash.count(temp))) {
                     double preCost = costHash.find(temp)->second;
                     if (newCost < preCost){
                         temp->setParent(state);
-                        costHash.insert(pair<State<T>*, double>(temp, newCost));
+                        costHash.find(temp)->second = newCost;
+                        //costHash.insert(pair<State<T>*, double>(temp, newCost));
                     }
                     //visited
                 } else {
                     open.push_back(temp);
+                    openHash.insert(temp);
                     temp->setParent(state);
                     costHash.insert(pair<State<T>*, double>(temp, newCost));
                 }

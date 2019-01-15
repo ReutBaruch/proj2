@@ -126,6 +126,7 @@ public:
                     }
                     temp->setParent(state);
                     open = sort(open, temp);
+                    close.insert(state);
                 }
             }
         }
