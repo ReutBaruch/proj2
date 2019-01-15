@@ -154,7 +154,11 @@ void MyParallerServer::open(int port, ClientHandler *clientHandler) {
     delete openSocket;
     //pthread_exit(NULL);
 }
-
+    /**
+     * he function stop the server
+     * @param socketFd the socket
+     */
 void MyParallerServer::stop(int socketFd) {
+    //close the socket
     close(socketFd);
 }

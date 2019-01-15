@@ -9,14 +9,22 @@
 
 template <class Problem, class Solution, class T>
 class MatrixSolver: public Solver<Problem, Solution> {
+    //members
     Searcher<Solution, T>* searcher;
     MatrixSearchable<T>* matrix;
 
 public:
+    //constructor
     MatrixSolver(Searcher<Solution, T>* search){
         this->searcher = search;
     }
+    /**
+     *
+     * @param problem the problem to solve
+     * @return the solution
+     */
     string solve(string problem){
+        //create matrix
         matrix = new MatrixSearchable<T>();
         matrix->createMatrix(problem);
 
@@ -25,6 +33,7 @@ public:
         return result;
     }
 
+    //distructor
     virtual ~MatrixSolver(){
         delete this->matrix;
     };

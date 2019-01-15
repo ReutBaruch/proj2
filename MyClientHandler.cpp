@@ -4,6 +4,11 @@
 #include <string>
 
 template <>
+/**
+ * constructor
+ * @param cacheMan CacheManager
+ * @param solve solver
+ */
 MyClientHandler<string, string>::MyClientHandler(CacheManager<string, string>* cacheMan,
         Solver<string, string>* solve){
     this->cacheManager = cacheMan;
@@ -11,6 +16,10 @@ MyClientHandler<string, string>::MyClientHandler(CacheManager<string, string>* c
 }
 
 template <>
+/**
+ * handle one client
+ * @param newSockFD the client's socket
+ */
 void MyClientHandler<string, string>::handleClient(int newSockFD) {
     char buffer[1025];
     int n;
@@ -44,13 +53,15 @@ void MyClientHandler<string, string>::handleClient(int newSockFD) {
         this->cacheManager->saveSolution(solution, problem);
     }
 
+    //write to socket
     char bufferWrite[1024];
     bzero(bufferWrite, 1025);
     strcpy(bufferWrite, solution.c_str());
     ssize_t nBuffer = write(newSockFD, bufferWrite, strlen(bufferWrite));
 
+    //problem writing to socket
     if (nBuffer < 0) {
-        perror("ERROR reading from socket");
+        perror("ERROR writing to socket");
         exit(1);
     }
 

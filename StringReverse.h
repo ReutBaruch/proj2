@@ -4,6 +4,9 @@
 #include "Solver.h"
 #include <string>
 using namespace std;
+/**
+ * StringReverse class
+ */
 class StringReverse: public Solver<string, string> {
 public:
     StringReverse(){}

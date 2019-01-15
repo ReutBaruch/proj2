@@ -5,11 +5,22 @@
 
 using namespace server_side;
 class MySerialServer: public Server{
+    //member
     bool runner=true;
 
 public:
+    /**
+     *
+     * @param port the port
+     * @param clientHandler ClientHandler
+     */
     virtual void open(int port,ClientHandler* clientHandler);
+    /**
+     * stop the connection
+     * @param sockfd the socket
+     */
     virtual void stop(int sockfd);
+    //distructor
     virtual ~MySerialServer(){};
 };
 

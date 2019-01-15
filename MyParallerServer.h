@@ -28,10 +28,11 @@ public:
     void open(int port, ClientHandler *clientHandler);
 
     /**
-     * The function stop the server
+     * he function stop the server
+     * @param socketFd the socket
      */
     void stop(int socketFd);
-
+    //distructor
     virtual ~MyParallerServer(){};
 
 };

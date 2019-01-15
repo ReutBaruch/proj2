@@ -7,7 +7,12 @@
 class ClientHandler{
 
 public:
+    /**
+     * handle one client
+     * @param newSockFd socket
+     */
     virtual void handleClient(int newSockFd) = 0;
+    //distructor
     virtual ~ClientHandler(){};
 };
 

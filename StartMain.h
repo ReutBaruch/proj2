@@ -10,29 +10,37 @@
 #include "MyClientHandler.h"
 #include "CacheManager.h"
 #include "MatrixSolver.h"
-#include "Astar.h"
+#include "BFS.h"
 #include "FileCacheManager.h"
 
-
+//name space
 namespace boot{
     class StartMain{
     public:
+        //distructor
         ~StartMain(){};
+        //main
         int main(int argc, char* argv[]) {
+            //if there are not 2 args that past to the main
             if(argc != 2){
                 printf("Invalid input");
                 exit(4);
             }
+            //first arg will be the port
             int port = stoi(argv[1]);
+            //new server
             Server* myServer = new MyParallerServer();
-            Searcher<string, string>* searcher = new Astar<string, string>();
+            //choose to use the cheapest algorithm according to the 'solutions' file
+            Searcher<string, string>* searcher = new BFS<string, string>();
             Solver<string, string>* solver = new
                     MatrixSolver<string, string, string>(searcher);
             CacheManager<string, string>* cache = new FileCacheManager<string, string>();
             ClientHandler* client = new MyClientHandler<string, string>(cache, solver);
 
+            //open new server by the port and client
             myServer->open(port, client);
 
+            //free the memory allocated
             delete searcher;
             delete cache;
             delete solver;
